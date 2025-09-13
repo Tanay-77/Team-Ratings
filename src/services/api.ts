@@ -8,9 +8,7 @@ import {
   query, 
   orderBy,
   where,
-  getDoc,
-  enableNetwork,
-  disableNetwork
+  getDoc
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Team, NewTeam } from '../types/team';
@@ -59,17 +57,27 @@ export const api = {
         const data = doc.data();
         const ratings = data.ratings || [];
         const ratedBy = data.ratedBy || [];
+        const suggestions = data.suggestions || [];
         console.log('Team data:', { id: doc.id, teamName: data.teamName, projectName: data.projectName });
         return {
           id: doc.id,
           teamName: data.teamName,
           projectName: data.projectName,
+          logoUrl: data.logoUrl,
           ratings,
           ratedBy,
+          suggestions: suggestions.map((s: any) => ({
+            ...s,
+            timestamp: s.timestamp?.toDate() || new Date()
+          })),
           averageRating: calculateAverageRating(ratings),
           totalRatings: ratings.length,
           createdBy: data.createdBy,
-          createdAt: data.createdAt?.toDate() || new Date()
+          createdByName: data.createdByName || 'Anonymous',
+          createdAt: data.createdAt?.toDate() || new Date(),
+          status: data.status || 'pending',
+          reviewedBy: data.reviewedBy,
+          reviewedAt: data.reviewedAt?.toDate()
         };
       });
 
@@ -91,14 +99,26 @@ export const api = {
       });
       
       // Try to add the team directly - Firebase will handle uniqueness
-      const docRef = await addDoc(teamsCollection, {
+      const teamDocData: any = {
         teamName: teamData.teamName,
         projectName: teamData.projectName,
         ratings: [],
         ratedBy: [],
+        suggestions: [],
         createdBy: userId,
-        createdAt: new Date()
-      });
+        createdAt: new Date(),
+        status: 'pending' as const,
+        createdByName: teamData.createdByName || 'Anonymous',
+        reviewedBy: null,
+        reviewedAt: null
+      };
+
+      // Only add logoUrl if it's not undefined
+      if (teamData.logoUrl) {
+        teamDocData.logoUrl = teamData.logoUrl;
+      }
+
+      const docRef = await addDoc(teamsCollection, teamDocData);
 
       console.log('Team added successfully with ID:', docRef.id);
 
@@ -106,12 +126,18 @@ export const api = {
         id: docRef.id,
         teamName: teamData.teamName,
         projectName: teamData.projectName,
+        logoUrl: teamData.logoUrl,
         ratings: [],
         ratedBy: [], // Initialize empty array for ratedBy
+        suggestions: [], // Initialize empty array for suggestions
         averageRating: 0,
         totalRatings: 0,
         createdBy: userId,
-        createdAt: new Date()
+        createdByName: teamData.createdByName || 'Anonymous',
+        createdAt: new Date(),
+        status: 'pending',
+        reviewedBy: undefined,
+        reviewedAt: undefined
       };
 
       return newTeam;
@@ -124,7 +150,7 @@ export const api = {
     });
   },
 
-  async rateTeam(teamId: string, rating: number, userId: string): Promise<Team> {
+  async rateTeam(teamId: string, rating: number, userId: string, suggestion?: string): Promise<Team> {
     if (rating < 1 || rating > 10) {
       throw new Error('Rating must be between 1 and 10');
     }
@@ -140,17 +166,51 @@ export const api = {
       
       const currentTeamData = currentTeamDoc.data();
       const userRatings = currentTeamData.ratedBy || [];
+      const currentRatings = currentTeamData.ratings || [];
+      const currentSuggestions = currentTeamData.suggestions || [];
+      
+      let updateData: any = {};
       
       // Check if user has already rated this team
-      if (userRatings.includes(userId)) {
-        throw new Error('You have already rated this team');
+      const userRatedIndex = userRatings.indexOf(userId);
+      if (userRatedIndex >= 0) {
+        // User has already rated - update their existing rating
+        const newRatings = [...currentRatings];
+        newRatings[userRatedIndex] = rating;
+        
+        // Update or add their suggestion
+        const newSuggestions = currentSuggestions.filter((s: any) => s.userId !== userId);
+        if (suggestion && suggestion.trim()) {
+          newSuggestions.push({
+            userId,
+            suggestion: suggestion.trim(),
+            rating,
+            timestamp: new Date()
+          });
+        }
+        
+        updateData = {
+          ratings: newRatings,
+          suggestions: newSuggestions
+        };
+      } else {
+        // New rating from this user
+        updateData.ratings = arrayUnion(rating);
+        updateData.ratedBy = arrayUnion(userId);
+        
+        // Add suggestion if provided
+        if (suggestion && suggestion.trim()) {
+          updateData.suggestions = arrayUnion({
+            userId,
+            suggestion: suggestion.trim(),
+            rating,
+            timestamp: new Date()
+          });
+        }
       }
-      
-      // Add the rating to the ratings array and the userId to ratedBy array
-      await updateDoc(teamRef, {
-        ratings: arrayUnion(rating),
-        ratedBy: arrayUnion(userId)
-      });
+
+      // Update the team document
+      await updateDoc(teamRef, updateData);
 
       // Fetch the updated team data
       const updatedTeamDoc = await getDoc(teamRef);
@@ -161,17 +221,27 @@ export const api = {
       const data = updatedTeamDoc.data();
       const ratings = data.ratings || [];
       const ratedBy = data.ratedBy || [];
+      const suggestions = data.suggestions || [];
       
       return {
         id: updatedTeamDoc.id,
         teamName: data.teamName,
         projectName: data.projectName,
+        logoUrl: data.logoUrl,
         ratings,
         ratedBy,
+        suggestions: suggestions.map((s: any) => ({
+          ...s,
+          timestamp: s.timestamp?.toDate() || new Date()
+        })),
         averageRating: calculateAverageRating(ratings),
         totalRatings: ratings.length,
         createdBy: data.createdBy,
-        createdAt: data.createdAt?.toDate() || new Date()
+        createdByName: data.createdByName || 'Anonymous',
+        createdAt: data.createdAt?.toDate() || new Date(),
+        status: data.status || 'pending',
+        reviewedBy: data.reviewedBy,
+        reviewedAt: data.reviewedAt?.toDate()
       };
     }).catch(error => {
       console.error('Error rating team after retries:', error);
@@ -197,5 +267,118 @@ export const api = {
       console.error('Error fetching leaderboard:', error);
       throw new Error('Failed to fetch leaderboard');
     }
+  },
+
+  async getAllTeamsForAdmin(): Promise<Team[]> {
+    return retryOperation(async () => {
+      console.log('Fetching all teams for admin...');
+      const teamsCollection = collection(db, TEAMS_COLLECTION);
+      const teamsQuery = query(teamsCollection, orderBy('createdAt', 'desc'));
+      const teamsSnapshot = await getDocs(teamsQuery);
+      
+      console.log(`Found ${teamsSnapshot.size} teams for admin`);
+      
+      const teams: Team[] = teamsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        const ratings = data.ratings || [];
+        const ratedBy = data.ratedBy || [];
+        const suggestions = data.suggestions || [];
+        
+        return {
+          id: doc.id,
+          teamName: data.teamName,
+          projectName: data.projectName,
+          logoUrl: data.logoUrl,
+          ratings,
+          ratedBy,
+          suggestions: suggestions.map((s: any) => ({
+            ...s,
+            timestamp: s.timestamp?.toDate() || new Date()
+          })),
+          averageRating: calculateAverageRating(ratings),
+          totalRatings: ratings.length,
+          createdBy: data.createdBy,
+          createdByName: data.createdByName || 'Anonymous',
+          createdAt: data.createdAt?.toDate() || new Date(),
+          status: data.status || 'pending',
+          reviewedBy: data.reviewedBy,
+          reviewedAt: data.reviewedAt?.toDate()
+        };
+      });
+
+      return teams;
+    }).catch(error => {
+      console.error('Error fetching teams for admin after retries:', error);
+      throw new Error('Failed to fetch teams. Please check your internet connection.');
+    });
+  },
+
+  async updateTeamStatus(
+    teamId: string, 
+    status: 'approved' | 'rejected', 
+    reviewedBy: string
+  ): Promise<void> {
+    return retryOperation(async () => {
+      const teamRef = doc(db, TEAMS_COLLECTION, teamId);
+      
+      await updateDoc(teamRef, {
+        status,
+        reviewedBy,
+        reviewedAt: new Date()
+      });
+
+      console.log(`Team ${teamId} status updated to ${status} by ${reviewedBy}`);
+    }).catch(error => {
+      console.error('Error updating team status after retries:', error);
+      throw new Error('Failed to update team status. Please check your internet connection.');
+    });
+  },
+
+  async getApprovedTeams(): Promise<Team[]> {
+    return retryOperation(async () => {
+      console.log('Fetching approved teams only...');
+      const teamsCollection = collection(db, TEAMS_COLLECTION);
+      const approvedTeamsQuery = query(
+        teamsCollection, 
+        where('status', '==', 'approved')
+      );
+      const teamsSnapshot = await getDocs(approvedTeamsQuery);
+      
+      console.log(`Found ${teamsSnapshot.size} approved teams`);
+      
+      const teams: Team[] = teamsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        const ratings = data.ratings || [];
+        const ratedBy = data.ratedBy || [];
+        const suggestions = data.suggestions || [];
+        
+        return {
+          id: doc.id,
+          teamName: data.teamName,
+          projectName: data.projectName,
+          logoUrl: data.logoUrl,
+          ratings,
+          ratedBy,
+          suggestions: suggestions.map((s: any) => ({
+            ...s,
+            timestamp: s.timestamp?.toDate() || new Date()
+          })),
+          averageRating: calculateAverageRating(ratings),
+          totalRatings: ratings.length,
+          createdBy: data.createdBy,
+          createdByName: data.createdByName || 'Anonymous',
+          createdAt: data.createdAt?.toDate() || new Date(),
+          status: data.status || 'pending',
+          reviewedBy: data.reviewedBy,
+          reviewedAt: data.reviewedAt?.toDate()
+        };
+      });
+
+      // Sort by createdAt descending on client-side to avoid composite index
+      return teams.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }).catch(error => {
+      console.error('Error fetching approved teams after retries:', error);
+      throw new Error('Failed to fetch approved teams. Please check your internet connection.');
+    });
   },
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Team } from '../types/team';
+import { Team, NewTeam } from '../types/team';
 import { api } from '../services/api';
 
 // Connection status hook
@@ -41,7 +41,7 @@ export const useTeams = () => {
     }
   };
 
-  const addTeam = async (teamData: { teamName: string; projectName: string }, userId: string) => {
+  const addTeam = async (teamData: NewTeam, userId: string) => {
     try {
       // Check for duplicates on client side first (faster)
       const existingTeam = teams.find(team => 
@@ -61,9 +61,9 @@ export const useTeams = () => {
     }
   };
 
-  const rateTeam = async (teamId: string, rating: number, userId: string) => {
+  const rateTeam = async (teamId: string, rating: number, userId: string, suggestion?: string) => {
     try {
-      const updatedTeam = await api.rateTeam(teamId, rating, userId);
+      const updatedTeam = await api.rateTeam(teamId, rating, userId, suggestion);
       setTeams(prev => prev.map(team => 
         team.id === teamId ? updatedTeam : team
       ));

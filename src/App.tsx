@@ -1,10 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AuthGuard from './components/AuthGuard';
 import Navigation from './components/Navigation';
-import TeamsPage from './pages/TeamsPage';
 import LandingPage from './pages/LandingPage';
 import Leaderboard from './components/Leaderboard';
+import MyTeamPage from './pages/MyTeamPage';
+import CreateTeamPage from './pages/CreateTeamPage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   return (
@@ -14,12 +15,23 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         
         {/* Protected routes - require authentication */}
-        <Route path="/teams" element={
+        <Route path="/my-team" element={
           <AuthGuard>
             <div className="min-h-screen bg-gray-50">
               <Navigation />
-              <div className="pt-4">
-                <TeamsPage />
+              <div className="pt-20">
+                <MyTeamPage />
+              </div>
+            </div>
+          </AuthGuard>
+        } />
+        
+        <Route path="/create-team" element={
+          <AuthGuard>
+            <div className="min-h-screen bg-gray-50">
+              <Navigation />
+              <div className="pt-20">
+                <CreateTeamPage />
               </div>
             </div>
           </AuthGuard>
@@ -29,8 +41,19 @@ function App() {
           <AuthGuard>
             <div className="min-h-screen bg-gray-50">
               <Navigation />
-              <div className="pt-4">
+              <div className="pt-20">
                 <Leaderboard />
+              </div>
+            </div>
+          </AuthGuard>
+        } />
+        
+        <Route path="/admin" element={
+          <AuthGuard>
+            <div className="min-h-screen bg-gray-50">
+              <Navigation />
+              <div className="pt-20">
+                <AdminPage />
               </div>
             </div>
           </AuthGuard>

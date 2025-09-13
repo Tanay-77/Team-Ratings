@@ -11,11 +11,15 @@ const LandingPage: React.FC = () => {
     if (!user) {
       try {
         await signInWithGoogle();
+        // After successful authentication, navigate to leaderboard
+        navigate('/leaderboard');
       } catch (error) {
         console.error('Error signing in:', error);
       }
+    } else {
+      // If user is already authenticated, go to leaderboard
+      navigate('/leaderboard');
     }
-    navigate('/teams');
   };
 
   return (
