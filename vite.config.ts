@@ -16,5 +16,7 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env': env
     },
+    // Configure base path for the application
+    base: '/',
   };
 });
