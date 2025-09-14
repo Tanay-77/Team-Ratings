@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Team } from '../types/team';
 import { api } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
-import { Trophy, Users, Code, Star, MessageSquare, Calendar, TrendingUp, Plus, ChevronDown } from 'lucide-react';
+import { Trophy, Users, Code, Star, MessageSquare, Calendar, TrendingUp, Plus, ChevronDown, Sparkles, BarChart3 } from 'lucide-react';
 
 const MyTeamPage: React.FC = () => {
   const [myTeams, setMyTeams] = useState<Team[]>([]);
@@ -56,50 +57,188 @@ const MyTeamPage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Please sign in to view your team</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-20 blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
         </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 glass-card p-12 text-center"
+        >
+          <motion.div
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          </motion.div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600">Please sign in to view your team dashboard</p>
+        </motion.div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Trophy className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-pulse" />
-          <p className="text-gray-600">Loading your team data...</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-20 blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
         </div>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="relative z-10 glass-card p-12 text-center"
+        >
+          <motion.div
+            animate={{ 
+              rotate: 360,
+              scale: [1, 1.1, 1]
+            }}
+            transition={{ 
+              rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+              scale: { duration: 1, repeat: Infinity, ease: "easeInOut" }
+            }}
+          >
+            <Trophy className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+          </motion.div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Dashboard</h2>
+          <p className="text-gray-600">Fetching your team data...</p>
+        </motion.div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center text-red-600">
-          <p>{error}</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-card p-12 text-center max-w-md"
+        >
+          <motion.div
+            animate={{ y: [-5, 5, -5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <MessageSquare className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          </motion.div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Something Went Wrong</h2>
+          <p className="text-red-600 mb-4">{error}</p>
+          <motion.button
+            onClick={() => window.location.reload()}
+            className="btn-stripe px-6 py-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Try Again
+          </motion.button>
+        </motion.div>
       </div>
     );
   }
 
   if (!myTeams || myTeams.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Team Found</h2>
-          <p className="text-gray-600 mb-6">You haven't created a team yet</p>
-          <Link
-            to="/create-team"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-green-400 to-blue-400 opacity-20 blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-20 w-96 h-96 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 blur-3xl"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              rotate: [360, 180, 0],
+            }}
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 max-w-lg mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="glass-card p-12 text-center"
           >
-            <Plus className="w-5 h-5 mr-2" />
-            Create Your Team
-          </Link>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
+            >
+              <Users className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-3xl font-bold text-gray-900 mb-4"
+            >
+              Welcome to Your Dashboard
+            </motion.h2>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-gray-600 mb-8"
+            >
+              You haven't created a team yet. Start by creating your first team to showcase your amazing work!
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <Link
+                to="/create-team"
+                className="btn-stripe text-lg px-8 py-4 inline-flex items-center"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Create Your Team
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     );
@@ -113,37 +252,98 @@ const MyTeamPage: React.FC = () => {
   const teamRank = 1;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 right-20 w-96 h-96 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header with Team Selector */}
-        <div className="mb-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-8"
+        >
           {/* Team Selector Dropdown */}
           {myTeams.length > 1 && (
-            <div className="mb-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mb-6"
+            >
               <div className="relative" ref={dropdownRef}>
-                <button
+                <motion.button
                   onClick={() => setShowTeamDropdown(!showTeamDropdown)}
-                  className="w-full md:w-auto flex items-center justify-between px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full md:w-auto glass-card px-6 py-4 flex items-center justify-between hover:bg-white/40 transition-all duration-200"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
                 >
-                  <span className="font-medium text-gray-900">
-                    {selectedTeam.teamName} ({myTeams.length} teams)
-                  </span>
-                  <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${showTeamDropdown ? 'rotate-180' : ''}`} />
-                </button>
+                  <div className="flex items-center">
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100/50 backdrop-blur-sm border border-blue-200/30 shadow-sm mr-3">
+                      <Sparkles className="w-3 h-3 text-blue-600 mr-1" />
+                      <span className="text-xs font-medium text-blue-800">Team Selector</span>
+                    </div>
+                    <span className="font-semibold text-gray-900">
+                      {selectedTeam.teamName} ({myTeams.length} teams)
+                    </span>
+                  </div>
+                  <motion.div
+                    animate={{ rotate: showTeamDropdown ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  </motion.div>
+                </motion.button>
                 
                 {showTeamDropdown && (
-                  <div className="absolute top-full left-0 right-0 md:right-auto md:w-80 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-20">
-                    <div className="py-1">
-                      {myTeams.map((team) => (
-                        <button
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 right-0 md:right-auto md:w-80 mt-2 glass-card shadow-xl z-20 overflow-hidden"
+                  >
+                    <div className="py-2">
+                      {myTeams.map((team, index) => (
+                        <motion.button
                           key={team.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.2, delay: index * 0.05 }}
                           onClick={() => {
                             setSelectedTeam(team);
                             setShowTeamDropdown(false);
                           }}
-                          className={`w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center transition-colors ${
-                            selectedTeam.id === team.id ? 'bg-blue-50 text-blue-700' : 'text-gray-900'
+                          className={`w-full px-4 py-3 text-left hover:bg-white/50 flex items-center transition-all duration-200 ${
+                            selectedTeam.id === team.id ? 'bg-blue-50/80 text-blue-700 border-l-4 border-blue-500' : 'text-gray-900'
                           }`}
+                          whileHover={{ x: 4 }}
                         >
                           {team.logoUrl ? (
                             <img
@@ -161,139 +361,248 @@ const MyTeamPage: React.FC = () => {
                             <p className="text-sm text-gray-500 truncate">{team.projectName}</p>
                           </div>
                           {selectedTeam.id === team.id && (
-                            <Star className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <Star className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                            </motion.div>
                           )}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
-                  </div>
+                  </motion.div>
                 )}
               </div>
-            </div>
+            </motion.div>
           )}
 
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6"
+          >
             <div className="flex items-start">
               {selectedTeam.logoUrl ? (
-                <img
+                <motion.img
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
                   src={selectedTeam.logoUrl}
                   alt={`${selectedTeam.teamName} logo`}
                   className="w-20 h-20 rounded-2xl border-4 border-white shadow-lg mr-4 flex-shrink-0"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center border-4 border-white shadow-lg mr-4 flex-shrink-0">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center border-4 border-white shadow-lg mr-4 flex-shrink-0"
+                >
                   <Users className="w-10 h-10 text-blue-600" />
-                </div>
+                </motion.div>
               )}
               <div className="text-left min-w-0 flex-1">
-                <div className="flex items-center gap-3 flex-wrap">
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="flex items-center gap-3 flex-wrap"
+                >
                   <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">{selectedTeam.teamName}</h1>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    selectedTeam.status === 'approved' 
-                      ? 'bg-green-100 text-green-700' 
-                      : selectedTeam.status === 'rejected'
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}>
+                  <motion.span 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.7 }}
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedTeam.status === 'approved' 
+                        ? 'bg-green-100/80 text-green-700 border border-green-200/50' 
+                        : selectedTeam.status === 'rejected'
+                        ? 'bg-red-100/80 text-red-700 border border-red-200/50'
+                        : 'bg-yellow-100/80 text-yellow-700 border border-yellow-200/50'
+                    }`}
+                  >
                     {selectedTeam.status === 'approved' && '✓ Approved'}
                     {selectedTeam.status === 'rejected' && '✗ Rejected'}
                     {selectedTeam.status === 'pending' && '⏳ Pending Review'}
-                  </span>
-                </div>
-                <p className="text-base sm:text-lg text-gray-600 flex items-center mt-1 break-words">
+                  </motion.span>
+                </motion.div>
+                <motion.p 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="text-base sm:text-lg text-gray-600 flex items-center mt-1 break-words"
+                >
                   <Code className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
                   {selectedTeam.projectName}
-                </p>
+                </motion.p>
               </div>
             </div>
-            <Link
-              to="/create-team"
-              className="inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm whitespace-nowrap lg:ml-4"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Create New Team
-            </Link>
-          </div>
-        </div>
+              <Link
+                to="/create-team"
+                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl text-sm whitespace-nowrap lg:ml-4"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create New Team
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="glass-card p-6 hover:bg-white/40 transition-all duration-200"
+            whileHover={{ y: -5, scale: 1.02 }}
+          >
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-amber-100">
+              <motion.div 
+                className="p-3 rounded-2xl bg-gradient-to-r from-amber-100 to-yellow-100 shadow-sm"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
                 <Trophy className="w-6 h-6 text-amber-600" />
-              </div>
+              </motion.div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Rank</p>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Rank</p>
                 <p className="text-2xl font-bold text-gray-900">#{teamRank}</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="glass-card p-6 hover:bg-white/40 transition-all duration-200"
+            whileHover={{ y: -5, scale: 1.02 }}
+          >
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-blue-100">
+              <motion.div 
+                className="p-3 rounded-2xl bg-gradient-to-r from-blue-100 to-indigo-100 shadow-sm"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
                 <Star className="w-6 h-6 text-blue-600" />
-              </div>
+              </motion.div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Average Rating</p>
-                <p className="text-2xl font-bold text-gray-900">
-                              <div className="flex items-end">
-              <span className="text-2xl font-bold text-gray-900 mr-1">
-                {selectedTeam.averageRating > 0 ? selectedTeam.averageRating.toFixed(1) : 'N/A'}
-              </span>
-              <span className="text-sm text-gray-500 mb-0.5">/10</span>
-            </div>
-                </p>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Average Rating</p>
+                <div className="flex items-end">
+                  <span className="text-2xl font-bold text-gray-900 mr-1">
+                    {selectedTeam.averageRating > 0 ? selectedTeam.averageRating.toFixed(1) : 'N/A'}
+                  </span>
+                  <span className="text-sm text-gray-500 mb-0.5">/10</span>
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+            className="glass-card p-6 hover:bg-white/40 transition-all duration-200"
+            whileHover={{ y: -5, scale: 1.02 }}
+          >
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-green-100">
+              <motion.div 
+                className="p-3 rounded-2xl bg-gradient-to-r from-green-100 to-emerald-100 shadow-sm"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
                 <Users className="w-6 h-6 text-green-600" />
-              </div>
+              </motion.div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Total Ratings</p>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Total Ratings</p>
                 <p className="text-2xl font-bold text-gray-900">{selectedTeam.totalRatings}</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="glass-card p-6 hover:bg-white/40 transition-all duration-200"
+            whileHover={{ y: -5, scale: 1.02 }}
+          >
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-purple-100">
+              <motion.div 
+                className="p-3 rounded-2xl bg-gradient-to-r from-purple-100 to-pink-100 shadow-sm"
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+              >
                 <MessageSquare className="w-6 h-6 text-purple-600" />
-              </div>
+              </motion.div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Suggestions</p>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Suggestions</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {selectedTeam.suggestions.length}
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Suggestions and Feedback */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-            <MessageSquare className="w-5 h-5 mr-2 text-blue-600" />
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="glass-card p-6 mb-8"
+        >
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="text-xl font-bold text-gray-900 mb-6 flex items-center"
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MessageSquare className="w-5 h-5 mr-2 text-blue-600" />
+            </motion.div>
             Suggestions & Feedback
-          </h2>
+          </motion.h2>
           
           {selectedTeam.suggestions.length > 0 ? (
             <div className="space-y-4">
               {selectedTeam.suggestions.map((suggestion, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
+                <motion.div 
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                  className="border border-gray-200/50 rounded-2xl p-6 bg-white/30 backdrop-blur-sm hover:bg-white/50 transition-all duration-200"
+                  whileHover={{ y: -2 }}
+                >
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
+                      <motion.div 
+                        className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center shadow-sm"
+                        whileHover={{ scale: 1.1, rotate: 360 }}
+                        transition={{ duration: 0.6 }}
+                      >
                         <MessageSquare className="w-5 h-5 text-green-600" />
-                      </div>
+                      </motion.div>
                       <div className="ml-3">
-                        <p className="font-medium text-gray-900">Anonymous Feedback</p>
+                        <p className="font-semibold text-gray-900">Anonymous Feedback</p>
                         <p className="text-sm text-gray-500 flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
                           {suggestion.timestamp.toLocaleDateString()}
@@ -302,34 +611,64 @@ const MyTeamPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-gray-700">{suggestion.suggestion}</p>
+                  <div className="bg-gradient-to-r from-gray-50/80 to-blue-50/50 backdrop-blur-sm rounded-2xl p-4 border border-gray-200/30">
+                    <p className="text-gray-700 leading-relaxed">{suggestion.suggestion}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No suggestions or feedback yet</p>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="text-center py-12"
+            >
+              <motion.div
+                animate={{ y: [-5, 5, -5] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              </motion.div>
+              <p className="text-gray-500 font-medium">No suggestions or feedback yet</p>
               <p className="text-sm text-gray-400 mt-2">Feedback will appear here when users rate your team</p>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* Rating Distribution */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2 text-blue-600" />
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="glass-card p-4 sm:p-6"
+        >
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+            className="text-xl font-bold text-gray-900 mb-6 flex items-center"
+          >
+            <motion.div
+              whileHover={{ rotate: 180 }}
+              transition={{ duration: 0.5 }}
+            >
+              <BarChart3 className="w-5 h-5 mr-2 text-blue-600" />
+            </motion.div>
             Rating Distribution
-          </h2>
+          </motion.h2>
           
           {selectedTeam.totalRatings > 0 ? (
-            <div className="space-y-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1 }}
+              className="space-y-6"
+            >
               {/* Histogram */}
-              <div className="relative">
+              <div className="relative bg-gradient-to-r from-blue-50/50 to-purple-50/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-200/30">
                 <div className="flex items-end justify-between h-48 sm:h-64 px-2 sm:px-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => {
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating, index) => {
                     const count = selectedTeam.ratings.filter(r => r === rating).length;
                     const maxCount = Math.max(...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(r => 
                       selectedTeam.ratings.filter(rt => rt === r).length
@@ -337,54 +676,92 @@ const MyTeamPage: React.FC = () => {
                     const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
                     
                     return (
-                      <div key={rating} className="flex-1 flex flex-col items-center group">
+                      <motion.div 
+                        key={rating} 
+                        initial={{ opacity: 0, scaleY: 0 }}
+                        animate={{ opacity: 1, scaleY: 1 }}
+                        transition={{ duration: 0.6, delay: 1.2 + index * 0.1 }}
+                        className="flex-1 flex flex-col items-center group"
+                      >
                         {/* Bar */}
                         <div className="w-full max-w-8 sm:max-w-12 flex flex-col items-center">
-                          <div
-                            className="w-full bg-gradient-to-t from-blue-600 to-blue-500 rounded-t-md transition-all duration-300 group-hover:from-blue-700 group-hover:to-blue-600 relative"
+                          <motion.div
+                            className="w-full bg-gradient-to-t from-blue-600 to-blue-500 rounded-t-xl transition-all duration-300 group-hover:from-blue-700 group-hover:to-blue-600 relative shadow-lg"
                             style={{ 
                               height: `${Math.max(percentage, count > 0 ? 10 : 0)}%`,
-                              minHeight: count > 0 ? '8px' : '0px'
+                              minHeight: count > 0 ? '12px' : '0px'
+                            }}
+                            whileHover={{ 
+                              scale: 1.05,
+                              boxShadow: "0 10px 25px -5px rgba(59, 130, 246, 0.3)"
                             }}
                           >
                             {/* Count label on top of bar */}
                             {count > 0 && (
-                              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-                                <span className="text-xs font-medium text-gray-700 bg-white px-1 py-0.5 rounded shadow-sm">
+                              <motion.div 
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 1.4 + index * 0.1 }}
+                                className="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                              >
+                                <span className="text-xs font-bold text-gray-700 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg shadow-sm border border-blue-200/50">
                                   {count}
                                 </span>
-                              </div>
+                              </motion.div>
                             )}
-                          </div>
+                          </motion.div>
                         </div>
                         
                         {/* Rating label */}
-                        <div className="mt-2 text-xs sm:text-sm font-medium text-gray-600">
+                        <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.4, delay: 1.5 + index * 0.1 }}
+                          className="mt-3 text-xs sm:text-sm font-semibold text-gray-600"
+                        >
                           {rating}
-                        </div>
-                      </div>
+                        </motion.div>
+                      </motion.div>
                     );
                   })}
                 </div>
                 
                 {/* Y-axis label */}
-                <div className="absolute left-0 top-0 h-full flex items-center">
-                  <div className="transform -rotate-90 text-xs sm:text-sm text-gray-600 font-medium whitespace-nowrap">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 2 }}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2"
+                >
+                  <div className="transform -rotate-90 text-xs sm:text-sm text-gray-600 font-semibold whitespace-nowrap">
                     Count
                   </div>
-                </div>
+                </motion.div>
               </div>
               
               {/* X-axis label */}
-              <div className="text-center">
-                <p className="text-xs sm:text-sm text-gray-600 font-medium">Rating (1-10)</p>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 2.2 }}
+                className="text-center"
+              >
+                <p className="text-xs sm:text-sm text-gray-600 font-semibold">Rating (1-10)</p>
+              </motion.div>
               
               {/* Statistics */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-gray-100">
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">Most Common</p>
-                  <p className="text-sm font-bold text-gray-900">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 2.4 }}
+                className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-gray-200/50"
+              >
+                <motion.div 
+                  className="text-center p-4 bg-white/30 backdrop-blur-sm rounded-2xl border border-gray-200/30"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                >
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Most Common</p>
+                  <p className="text-sm font-bold text-gray-900 mt-1">
                     {(() => {
                       const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(r => ({
                         rating: r,
@@ -395,34 +772,60 @@ const MyTeamPage: React.FC = () => {
                       return mostCommon && mostCommon.count > 0 ? `${mostCommon.rating}/10` : 'N/A';
                     })()}
                   </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">Total Ratings</p>
-                  <p className="text-sm font-bold text-gray-900">{selectedTeam.totalRatings}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">Average</p>
-                  <p className="text-sm font-bold text-gray-900">{selectedTeam.averageRating}/10</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-500">Range</p>
-                  <p className="text-sm font-bold text-gray-900">
+                </motion.div>
+                <motion.div 
+                  className="text-center p-4 bg-white/30 backdrop-blur-sm rounded-2xl border border-gray-200/30"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                >
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Total Ratings</p>
+                  <p className="text-sm font-bold text-gray-900 mt-1">{selectedTeam.totalRatings}</p>
+                </motion.div>
+                <motion.div 
+                  className="text-center p-4 bg-white/30 backdrop-blur-sm rounded-2xl border border-gray-200/30"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                >
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Average</p>
+                  <p className="text-sm font-bold text-gray-900 mt-1">{selectedTeam.averageRating}/10</p>
+                </motion.div>
+                <motion.div 
+                  className="text-center p-4 bg-white/30 backdrop-blur-sm rounded-2xl border border-gray-200/30"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                >
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Range</p>
+                  <p className="text-sm font-bold text-gray-900 mt-1">
                     {selectedTeam.ratings.length > 0 
                       ? `${Math.min(...selectedTeam.ratings)}-${Math.max(...selectedTeam.ratings)}`
                       : 'N/A'
                     }
                   </p>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              </motion.div>
+            </motion.div>
           ) : (
-            <div className="text-center py-12">
-              <TrendingUp className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No ratings to display yet</p>
-              <p className="text-sm text-gray-400 mt-2">Histogram will appear here when your team receives ratings</p>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1 }}
+              className="text-center py-16 bg-gradient-to-r from-gray-50/50 to-blue-50/30 backdrop-blur-sm rounded-2xl border border-gray-200/30"
+            >
+              <motion.div
+                animate={{ 
+                  y: [-10, 10, -10],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              >
+                <TrendingUp className="w-16 h-16 text-gray-400 mx-auto mb-6" />
+              </motion.div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">No ratings to display yet</h3>
+              <p className="text-sm text-gray-500">Your beautiful histogram will appear here when your team receives ratings</p>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -12,7 +12,12 @@ function App() {
     <Router>
       <Routes>
         {/* Public route - Landing page */}
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={
+          <div className="min-h-screen">
+            <Navigation />
+            <LandingPage />
+          </div>
+        } />
         
         {/* Protected routes - require authentication */}
         <Route path="/my-team" element={
