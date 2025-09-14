@@ -28,6 +28,12 @@ export interface NewTeam {
   createdByName?: string;
 }
 
+export interface TeamEditRequest {
+  teamName?: string;
+  projectName?: string;
+  logoUrl?: string;
+}
+
 export interface RatingData {
   teamId: string;
   rating: number;

@@ -241,7 +241,12 @@ export const api = {
         createdAt: data.createdAt?.toDate() || new Date(),
         status: data.status || 'pending',
         reviewedBy: data.reviewedBy,
-        reviewedAt: data.reviewedAt?.toDate()
+        reviewedAt: data.reviewedAt?.toDate(),
+        pendingEdit: data.pendingEdit ? {
+          ...data.pendingEdit,
+          submittedAt: data.pendingEdit.submittedAt?.toDate() || new Date()
+        } : undefined,
+        hasEditPending: data.hasEditPending || false
       };
     }).catch(error => {
       console.error('Error rating team after retries:', error);
@@ -302,7 +307,12 @@ export const api = {
           createdAt: data.createdAt?.toDate() || new Date(),
           status: data.status || 'pending',
           reviewedBy: data.reviewedBy,
-          reviewedAt: data.reviewedAt?.toDate()
+          reviewedAt: data.reviewedAt?.toDate(),
+          pendingEdit: data.pendingEdit ? {
+            ...data.pendingEdit,
+            submittedAt: data.pendingEdit.submittedAt?.toDate() || new Date()
+          } : undefined,
+          hasEditPending: data.hasEditPending || false
         };
       });
 
@@ -370,7 +380,12 @@ export const api = {
           createdAt: data.createdAt?.toDate() || new Date(),
           status: data.status || 'pending',
           reviewedBy: data.reviewedBy,
-          reviewedAt: data.reviewedAt?.toDate()
+          reviewedAt: data.reviewedAt?.toDate(),
+          pendingEdit: data.pendingEdit ? {
+            ...data.pendingEdit,
+            submittedAt: data.pendingEdit.submittedAt?.toDate() || new Date()
+          } : undefined,
+          hasEditPending: data.hasEditPending || false
         };
       });
 
@@ -381,4 +396,43 @@ export const api = {
       throw new Error('Failed to fetch approved teams. Please check your internet connection.');
     });
   },
+
+  async submitTeamEdit(teamId: string, editRequest: any, userId: string): Promise<void> {
+    return retryOperation(async () => {
+      console.log('Updating team fields and setting status to pending:', { teamId, editRequest, userId });
+      
+      const teamRef = doc(db, TEAMS_COLLECTION, teamId);
+      
+      // Get current team data to verify ownership
+      const teamDoc = await getDoc(teamRef);
+      if (!teamDoc.exists()) {
+        throw new Error('Team not found');
+      }
+      
+      const teamData = teamDoc.data();
+      if (teamData.createdBy !== userId) {
+        throw new Error('You can only edit your own teams');
+      }
+      
+      // Update team fields directly and set status back to pending
+      const updates: any = {
+        status: 'pending',
+        reviewedBy: null,
+        reviewedAt: null
+      };
+      
+      // Apply the field changes
+      if (editRequest.teamName) updates.teamName = editRequest.teamName;
+      if (editRequest.projectName) updates.projectName = editRequest.projectName;
+      if (editRequest.logoUrl !== undefined) updates.logoUrl = editRequest.logoUrl;
+      
+      await updateDoc(teamRef, updates);
+      
+      console.log('Team updated and status set to pending successfully');
+    }).catch(error => {
+      console.error('Error updating team:', error);
+      throw new Error('Failed to update team. Please try again.');
+    });
+  },
+
 };

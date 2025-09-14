@@ -4,13 +4,15 @@ import { motion } from 'framer-motion';
 import { Team } from '../types/team';
 import { api } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
-import { Trophy, Users, Code, Star, MessageSquare, Calendar, TrendingUp, Plus, ChevronDown, Sparkles, BarChart3 } from 'lucide-react';
+import { Trophy, Users, Code, Star, MessageSquare, Calendar, TrendingUp, Plus, ChevronDown, Sparkles, BarChart3, Edit3 } from 'lucide-react';
 import Footer from '../components/Footer';
+import EditTeamForm from '../components/EditTeamForm';
 
 const MyTeamPage: React.FC = () => {
   const [myTeams, setMyTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [showTeamDropdown, setShowTeamDropdown] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
@@ -41,6 +43,30 @@ const MyTeamPage: React.FC = () => {
 
     fetchMyTeams();
   }, [user]);
+
+  // Handle team edit submission
+  const handleEditTeam = async (teamId: string, editRequest: any) => {
+    try {
+      // Call API to submit edit request (we'll implement this next)
+      await api.submitTeamEdit(teamId, editRequest, user?.uid || '');
+      
+      // Refresh teams to get updated status
+      const teams = await api.getTeams();
+      const userTeams = teams.filter(team => team.createdBy === user?.uid);
+      setMyTeams(userTeams);
+      
+      // Update selected team if it's the one being edited
+      const updatedTeam = userTeams.find(team => team.id === teamId);
+      if (updatedTeam && selectedTeam?.id === teamId) {
+        setSelectedTeam(updatedTeam);
+      }
+      
+      // Show success message or handle UI feedback as needed
+    } catch (error) {
+      console.error('Failed to submit team edit:', error);
+      throw error; // Re-throw to let the form handle the error
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -445,10 +471,22 @@ const MyTeamPage: React.FC = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.7 }}
+              className="flex flex-col sm:flex-row gap-3"
             >
+              {/* Edit Team Button */}
+              <motion.button
+                onClick={() => setShowEditForm(true)}
+                className="inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl text-sm whitespace-nowrap"
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Edit3 className="w-4 h-4 mr-2" />
+                Edit Team
+              </motion.button>
+              
               <Link
                 to="/create-team"
-                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl text-sm whitespace-nowrap lg:ml-4"
+                className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl text-sm whitespace-nowrap"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create New Team
@@ -828,6 +866,16 @@ const MyTeamPage: React.FC = () => {
           )}
         </motion.div>
       </div>
+
+      {/* Edit Team Form Modal */}
+      {selectedTeam && (
+        <EditTeamForm
+          team={selectedTeam}
+          onEditTeam={handleEditTeam}
+          isOpen={showEditForm}
+          onClose={() => setShowEditForm(false)}
+        />
+      )}
 
       {/* Footer */}
       <Footer />
