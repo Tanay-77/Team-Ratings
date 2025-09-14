@@ -4,7 +4,8 @@ import SearchBar from '../components/SearchBar';
 import AddTeamForm from '../components/AddTeamForm';
 import TeamCard from '../components/TeamCard';
 import { useAuth } from '../hooks/useAuth';
-import { Users, Loader2, Wifi, WifiOff } from 'lucide-react';
+import { Users, Loader2, WifiOff } from 'lucide-react';
+import Footer from '../components/Footer';
 
 const TeamsPage: React.FC = () => {
   const { teams, loading, error, addTeam, rateTeam } = useTeams();
@@ -94,6 +95,9 @@ const TeamsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

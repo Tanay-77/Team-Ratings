@@ -14,6 +14,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import Footer from '../components/Footer';
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -778,6 +779,9 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* New Footer with LinkedIn Links */}
+      <Footer />
     </div>
   );
 };

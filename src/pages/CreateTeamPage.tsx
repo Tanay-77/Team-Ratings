@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { useTeams } from '../hooks/useTeams';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const CreateTeamPage: React.FC = () => {
   const { user } = useAuth();
@@ -516,6 +517,9 @@ const CreateTeamPage: React.FC = () => {
           </form>
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

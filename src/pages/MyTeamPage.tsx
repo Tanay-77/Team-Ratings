@@ -5,6 +5,7 @@ import { Team } from '../types/team';
 import { api } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import { Trophy, Users, Code, Star, MessageSquare, Calendar, TrendingUp, Plus, ChevronDown, Sparkles, BarChart3 } from 'lucide-react';
+import Footer from '../components/Footer';
 
 const MyTeamPage: React.FC = () => {
   const [myTeams, setMyTeams] = useState<Team[]>([]);
@@ -827,6 +828,9 @@ const MyTeamPage: React.FC = () => {
           )}
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

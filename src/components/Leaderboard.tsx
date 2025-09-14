@@ -6,6 +6,7 @@ import { Trophy, Users, Code, Search, X, Star, Crown, Medal, Award, Sparkles } f
 import { useAuth } from '../hooks/useAuth';
 import SearchBar from './SearchBar';
 import StarRating from './StarRating';
+import Footer from './Footer';
 
 const Leaderboard: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -778,6 +779,9 @@ const Leaderboard: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

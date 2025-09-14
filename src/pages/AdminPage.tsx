@@ -3,6 +3,7 @@ import { Users, Clock, CheckCircle, XCircle, Shield, Eye, UserCheck, Calendar } 
 import { Team } from '../types/team';
 import { api } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import Footer from '../components/Footer';
 
 const ADMIN_EMAILS = ['siddharthfarkade12@gmail.com', 'tanaymahajan7@gmail.com'];
 
@@ -285,6 +286,9 @@ const AdminPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
