@@ -7,7 +7,7 @@
   --stripe-purple: #635bff;
   --stripe-blue: #0073e6;
   --stripe-green: #00d924;
-  --stripe-orange: #ff5722;
+  --stripe-orange: #f97316;
   --stripe-red: #e25950;
   --stripe-gray-50: #fafbfc;
   --stripe-gray-100: #f6f9fc;
@@ -46,20 +46,16 @@ body {
   box-sizing: border-box;
   max-width: 100%;
 }
-.gradient-purple {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.gradient-blue {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.gradient-orange {
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
 }
 
 .gradient-mesh {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 50%, #f97316 100%);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -92,7 +88,7 @@ body {
 
 /* Stripe-style button */
 .btn-stripe {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--stripe-orange);
   color: white;
   border: none;
   padding: 14px 28px;
@@ -111,7 +107,7 @@ body {
 
 .btn-stripe:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
 }
 
 .btn-stripe:active {
@@ -127,7 +123,7 @@ body {
 .card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  border-color: rgba(102, 126, 234, 0.2);
+  border-color: rgba(249, 115, 22, 0.2);
 }
 
 /* Custom scrollbar */

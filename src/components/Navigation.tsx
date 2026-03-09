@@ -36,21 +36,21 @@ const Navigation: React.FC = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-white/80 backdrop-blur-xl shadow-lg border-b border-gray-200/20' 
-        : 'bg-white/70 backdrop-blur-sm'
+        ? 'bg-white shadow-md border-b border-gray-100' 
+        : 'bg-white'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
             <motion.div
-              className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center"
+              className="w-10 h-10 rounded-xl bg-brand-orange flex items-center justify-center"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Star className="h-6 w-6 text-white" />
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-blue-600 transition-all duration-300">
+            <span className="text-xl font-bold text-gray-900 group-hover:text-brand-orange transition-colors duration-300">
               Rate My Team
             </span>
           </Link>
@@ -102,7 +102,7 @@ const Navigation: React.FC = () => {
                       className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-brand-orange flex items-center justify-center">
                       <User className="w-4 h-4 text-white" />
                     </div>
                   )}
@@ -181,7 +181,7 @@ const Navigation: React.FC = () => {
                           className="w-10 h-10 rounded-full border-2 border-white shadow-sm"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-brand-orange flex items-center justify-center">
                           <User className="w-5 h-5 text-white" />
                         </div>
                       )}
