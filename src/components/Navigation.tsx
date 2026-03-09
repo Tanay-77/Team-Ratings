@@ -15,7 +15,7 @@ const Navigation: React.FC = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -34,11 +34,10 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white shadow-md border-b border-gray-100' 
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white shadow-md border-b border-gray-100'
         : 'bg-white'
-    }`}>
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -89,16 +88,16 @@ const Navigation: React.FC = () => {
               </AnimatePresence>
             </motion.button>
           </div>
-          
+
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-1">
             {user && (
               <div className="flex items-center space-x-3 mr-6">
                 <div className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-gray-50/50 backdrop-blur-sm">
                   {user.photoURL ? (
-                    <img 
-                      src={user.photoURL} 
-                      alt={user.displayName || 'User'} 
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName || 'User'}
                       className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
                     />
                   ) : (
@@ -121,7 +120,7 @@ const Navigation: React.FC = () => {
                 </motion.button>
               </div>
             )}
-            
+
             <NavLink
               to="/"
               icon={Home}
@@ -159,7 +158,7 @@ const Navigation: React.FC = () => {
             />
           </div>
         </div>
-        
+
         {/* Mobile menu, show/hide based on menu state */}
         <AnimatePresence>
           {isMobileMenuOpen && (
@@ -175,9 +174,9 @@ const Navigation: React.FC = () => {
                   <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-200/50 mb-4">
                     <div className="flex items-center space-x-3">
                       {user.photoURL ? (
-                        <img 
-                          src={user.photoURL} 
-                          alt={user.displayName || 'User'} 
+                        <img
+                          src={user.photoURL}
+                          alt={user.displayName || 'User'}
                           className="w-10 h-10 rounded-full border-2 border-white shadow-sm"
                         />
                       ) : (
@@ -200,7 +199,7 @@ const Navigation: React.FC = () => {
                     </motion.button>
                   </div>
                 )}
-                
+
                 <MobileNavLink
                   to="/"
                   icon={Home}

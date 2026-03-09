@@ -33,12 +33,7 @@ function App() {
         
         <Route path="/create-team" element={
           <AuthGuard>
-            <div className="min-h-screen bg-gray-50">
-              <Navigation />
-              <div className="pt-20">
-                <CreateTeamPage />
-              </div>
-            </div>
+            <CreateTeamPage />
           </AuthGuard>
         } />
         
