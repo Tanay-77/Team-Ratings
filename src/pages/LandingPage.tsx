@@ -405,11 +405,9 @@ const LandingPage: React.FC = () => {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             {/* Brand */}
             <div className="md:col-span-2">
-              <div className="flex items-center mb-4">
-                <div className="w-10 h-10 bg-white rounded-md flex items-center justify-center mr-3">
-                  <span className="text-brand-orange font-bold text-xl"><Star className="w-6 h-6" /></span>
-                </div>
-                <span className="text-2xl font-bold">Rate My Team</span>
+              <div className="flex items-center mb-6">
+                 <img src="/logo.png" alt="Rate My Team Logo" className="h-12 object-contain bg-white rounded-xl p-1 drop-shadow-md mr-3" />
+                 <span className="text-2xl font-bold">Rate My Team</span>
               </div>
               <p className="text-orange-100 text-sm mb-6 leading-relaxed max-w-sm">
                 The ultimate platform for discovering exceptional teams and rating outstanding work. Connect with talented professionals worldwide.

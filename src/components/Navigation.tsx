@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Trophy, Users, LogOut, User, Home, Menu, X, Plus, Shield, Star } from 'lucide-react';
+import { Trophy, Users, LogOut, User, Home, Menu, X, Plus, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 import { isAdmin } from '../utils/admin';
@@ -43,13 +43,13 @@ const Navigation: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <motion.div
-              className="w-10 h-10 rounded-xl bg-brand-orange flex items-center justify-center"
+            <motion.img
+              src="/logo.png"
+              alt="Rate My Team Logo"
+              className="h-10 object-contain"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-            >
-              <Star className="h-6 w-6 text-white" />
-            </motion.div>
+            />
             <span className="text-xl font-bold text-gray-900 group-hover:text-brand-orange transition-colors duration-300">
               Rate My Team
             </span>
