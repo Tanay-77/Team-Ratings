@@ -9,7 +9,6 @@ import {
   Shield,
   ArrowRight,
   Globe,
-  CheckCircle,
   Heart
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -91,51 +90,14 @@ const LandingPage: React.FC = () => {
 
           {/* Right Illustration/Dashboard Column */}
           <div className="flex-1 relative hidden lg:flex justify-center items-center">
-             <motion.div
+             <motion.img
+                src="/hero-section.png"
+                alt="Team Performance Analytics"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="relative w-full max-w-lg"
-             >
-                {/* Simulated Illustration Cards from Reference */}
-               <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8 transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                  <div className="flex items-center gap-4 mb-6">
-                     <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
-                        <BarChart2 className="w-6 h-6 text-brand-orange" />
-                     </div>
-                     <div>
-                        <div className="font-bold text-gray-900 text-lg">Team Performance</div>
-                        <div className="text-sm text-gray-500">Analytics overview</div>
-                     </div>
-                  </div>
-                  <div className="space-y-4">
-                     <div className="h-3 bg-gray-100 rounded-full w-full overflow-hidden">
-                        <div className="h-full bg-brand-orange w-3/4"></div>
-                     </div>
-                     <div className="h-3 bg-gray-100 rounded-full w-full overflow-hidden">
-                        <div className="h-full bg-blue-400 w-1/2"></div>
-                     </div>
-                     <div className="h-3 bg-gray-100 rounded-full w-full overflow-hidden">
-                        <div className="h-full bg-green-400 w-5/6"></div>
-                     </div>
-                  </div>
-               </div>
-               
-               {/* Floating Element */}
-               <motion.div 
-                 className="absolute -bottom-10 -left-10 bg-white p-4 rounded-xl shadow-xl border border-gray-50 flex items-center gap-3"
-                 animate={{ y: [0, -10, 0] }}
-                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-               >
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-sm">Target Reached</div>
-                    <div className="text-xs text-gray-500">+24% this week</div>
-                  </div>
-               </motion.div>
-             </motion.div>
+                className="w-full max-w-lg object-contain drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500"
+             />
           </div>
 
         </div>
