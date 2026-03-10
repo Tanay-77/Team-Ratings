@@ -134,35 +134,7 @@ const CreateTeamPage: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center py-12 overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-green-400 to-blue-400 opacity-20 blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-          <motion.div
-            className="absolute bottom-20 right-20 w-96 h-96 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 blur-3xl"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0],
-            }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        </div>
-
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center py-12 overflow-hidden">
         <div className="relative z-10 max-w-lg mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -215,7 +187,7 @@ const CreateTeamPage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#f4f7fe] flex flex-col justify-between py-12 px-4 font-sans text-gray-900">
+    <div className="min-h-screen bg-brand-gray flex flex-col justify-between py-12 px-4 font-sans text-gray-900">
       <div className="w-full max-w-2xl mx-auto flex-1 flex flex-col justify-center relative">
         {/* Back Button */}
         <motion.div

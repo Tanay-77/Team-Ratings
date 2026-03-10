@@ -142,21 +142,7 @@ const Leaderboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-20 blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        </div>
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -183,7 +169,7 @@ const Leaderboard: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 flex items-center justify-center">
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -211,35 +197,7 @@ const Leaderboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-20 left-20 w-64 h-64 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 opacity-20 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-20 w-96 h-96 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 blur-3xl"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-      </div>
-
+    <div className="min-h-screen bg-brand-gray py-12 overflow-hidden">
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div 
@@ -399,7 +357,7 @@ const Leaderboard: React.FC = () => {
                       rank === 1 ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-white' :
                       rank === 2 ? 'bg-gradient-to-r from-gray-400 to-gray-600 text-white' :
                       rank === 3 ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white' :
-                      'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                      'bg-gray-800 text-white'
                     }`}
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
@@ -543,13 +501,13 @@ const Leaderboard: React.FC = () => {
                           </div>
                         ) : user ? (
                           <motion.div 
-                            className="flex-1 min-w-[70px] text-center p-2 bg-gradient-to-r from-purple-50 to-pink-50 backdrop-blur-sm rounded-lg border border-purple-200/50 cursor-pointer"
+                            className="flex-1 min-w-[70px] text-center p-2 bg-orange-50 backdrop-blur-sm rounded-lg border border-orange-200/50 cursor-pointer"
                             whileHover={{ scale: 1.05, y: -2 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleTeamClick(team)}
                           >
-                            <div className="text-sm font-bold text-purple-600">Rate Now</div>
-                            <div className="text-xs text-purple-500">Click here</div>
+                            <div className="text-sm font-bold text-brand-orange">Rate Now</div>
+                            <div className="text-xs text-orange-500">Click here</div>
                           </motion.div>
                         ) : (
                           <div className="flex-1 min-w-[70px] text-center p-2 bg-gray-50/70 backdrop-blur-sm rounded-lg border border-gray-200/30">

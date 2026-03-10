@@ -261,18 +261,12 @@ interface NavLinkProps {
 const NavLink: React.FC<NavLinkProps> = ({ to, icon: Icon, label, isActive, variant = 'default' }) => {
   const getVariantStyles = () => {
     if (isActive) {
-      switch (variant) {
-        case 'primary':
-          return 'bg-blue-100/80 text-blue-700 border-blue-200/50';
-        case 'success':
-          return 'bg-green-100/80 text-green-700 border-green-200/50';
-        case 'danger':
-          return 'bg-red-100/80 text-red-700 border-red-200/50';
-        default:
-          return 'bg-gray-100/80 text-gray-700 border-gray-200/50';
+      if (variant === 'danger') {
+        return 'bg-red-50 text-red-600 border-red-200/50';
       }
+      return 'bg-orange-50 text-brand-orange border-orange-200/50';
     }
-    return 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/50 border-transparent';
+    return 'text-gray-600 hover:text-brand-orange hover:bg-orange-50/50 border-transparent';
   };
 
   return (
@@ -297,18 +291,12 @@ interface MobileNavLinkProps extends NavLinkProps {
 const MobileNavLink: React.FC<MobileNavLinkProps> = ({ to, icon: Icon, label, isActive, variant = 'default', onClick }) => {
   const getVariantStyles = () => {
     if (isActive) {
-      switch (variant) {
-        case 'primary':
-          return 'bg-blue-50 text-blue-700 border-blue-200';
-        case 'success':
-          return 'bg-green-50 text-green-700 border-green-200';
-        case 'danger':
-          return 'bg-red-50 text-red-700 border-red-200';
-        default:
-          return 'bg-gray-50 text-gray-700 border-gray-200';
+      if (variant === 'danger') {
+        return 'bg-red-50 text-red-600 border-red-200';
       }
+      return 'bg-orange-50 text-brand-orange border-orange-200';
     }
-    return 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 border-transparent';
+    return 'text-gray-700 hover:text-brand-orange hover:bg-orange-50 border-transparent';
   };
 
   return (

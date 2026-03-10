@@ -66,7 +66,7 @@ const AdminPage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
         <div className="text-center">
           <Shield className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600">Please sign in to access admin panel</p>
@@ -77,7 +77,7 @@ const AdminPage: React.FC = () => {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
         <div className="text-center">
           <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
@@ -89,9 +89,9 @@ const AdminPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
         <div className="text-center">
-          <Shield className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <Shield className="w-16 h-16 text-brand-orange mx-auto mb-4 animate-pulse" />
           <p className="text-gray-600">Loading admin dashboard...</p>
         </div>
       </div>
@@ -99,13 +99,13 @@ const AdminPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-brand-gray py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-              <Shield className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
+              <Shield className="w-6 h-6 text-brand-orange" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
@@ -175,8 +175,8 @@ const AdminPage: React.FC = () => {
                         className="w-16 h-16 rounded-lg border-2 border-gray-200 mr-4 flex-shrink-0"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center mr-4 flex-shrink-0">
-                        <Users className="w-8 h-8 text-blue-600" />
+                      <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center mr-4 flex-shrink-0">
+                        <Users className="w-8 h-8 text-brand-orange" />
                       </div>
                     )}
                     
