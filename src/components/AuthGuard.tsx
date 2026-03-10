@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { LogIn, Loader2 } from 'lucide-react';
 
 interface AuthGuardProps {
@@ -9,13 +8,12 @@ interface AuthGuardProps {
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { user, loading, signInWithGoogle } = useAuth();
-  const location = useLocation();
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-spin" />
+          <Loader2 className="w-16 h-16 text-brand-orange mx-auto mb-4 animate-spin" />
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -24,16 +22,16 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full mx-4">
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
+        <div className="glass-card p-10 max-w-md w-full mx-4">
           <div className="text-center">
-            <LogIn className="w-16 h-16 text-blue-600 mx-auto mb-6" />
+            <LogIn className="w-16 h-16 text-brand-orange mx-auto mb-6" />
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Team Ratings</h1>
             <p className="text-gray-600 mb-8">Sign in with your Google account to rate and manage teams</p>
             
             <button
               onClick={signInWithGoogle}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+              className="w-full bg-brand-orange text-white py-3.5 px-4 rounded-xl hover:bg-brand-orange-hover hover:scale-[1.02] shadow-lg shadow-brand-orange/20 transition-all duration-200 flex items-center justify-center space-x-3 font-medium cursor-pointer"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
