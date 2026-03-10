@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Team } from '../types/team';
 import { api } from '../services/api';
-import { Trophy, Users, Code, Search, X, Star, Crown, Medal, Award, Sparkles } from 'lucide-react';
+import { Trophy, Users, Code, Search, X, Star, Medal, Award, Sparkles } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import SearchBar from './SearchBar';
 import StarRating from './StarRating';
@@ -20,36 +20,6 @@ const Leaderboard: React.FC = () => {
   const [tempRating, setTempRating] = useState(0);
   const [isSubmittingRating, setIsSubmittingRating] = useState(false);
   const { user } = useAuth();
-
-  // Add custom animations for border effects
-  const borderAnimationStyles = `
-    @keyframes slideRight {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    @keyframes slideDown {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(100%); }
-    }
-    @keyframes slideLeft {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-    @keyframes slideUp {
-      0% { transform: translateY(100%); }
-      100% { transform: translateY(-100%); }
-    }
-  `;
-
-  React.useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = borderAnimationStyles;
-    document.head.appendChild(style);
-    
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -207,12 +177,12 @@ const Leaderboard: React.FC = () => {
           className="text-center mb-10"
         >
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-r from-amber-500 to-yellow-600 text-white mb-6 shadow-xl"
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-orange-50 text-brand-orange mb-6 shadow-sm border border-orange-100"
           >
-            <Crown className="w-10 h-10" />
+            <Trophy className="w-8 h-8" />
           </motion.div>
           
           <motion.div
@@ -285,15 +255,9 @@ const Leaderboard: React.FC = () => {
             transition={{ duration: 0.6, delay: 1.4 }}
             className="glass-card p-12 text-center"
           >
-            <motion.div
-              animate={{ 
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            </motion.div>
+            <div className="mb-4">
+              <Search className="w-16 h-16 text-gray-300 mx-auto" />
+            </div>
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No Results Found</h3>
             <p className="text-gray-500">No teams found matching <span className="font-semibold">"{searchTerm}"</span></p>
             <motion.button
@@ -312,216 +276,211 @@ const Leaderboard: React.FC = () => {
             transition={{ duration: 0.6, delay: 1.4 }}
             className="glass-card p-12 text-center"
           >
-            <motion.div
-              animate={{ y: [-5, 5, -5] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            </motion.div>
+            <div className="mb-4">
+              <Users className="w-16 h-16 text-gray-300 mx-auto" />
+            </div>
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No Teams Yet</h3>
             <p className="text-gray-500">The leaderboard will light up when teams start joining</p>
           </motion.div>
         ) : (
           <div className="space-y-6">
-            {filteredTeams.map((team, index) => {
-              const rank = teams.findIndex(t => t.id === team.id) + 1; // Use original rank from full list
-              
-              const getRankIcon = (rank: number) => {
-                if (rank === 1) return Crown;
-                if (rank === 2) return Medal;
-                if (rank === 3) return Award;
-                return null; // No icon for rank 4 and onwards
-              };
-
-              const RankIcon = getRankIcon(rank);
-              
-              return (
-                <motion.div
-                  key={team.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 1.6 + index * 0.1 }}
-                  className={`glass-card transition-all duration-300 hover:bg-white/50 hover:shadow-xl hover:-translate-y-2 relative ${
-                    rank === 1 ? 'border-2 border-amber-400/70 bg-gradient-to-br from-amber-50/80 to-yellow-50/80' :
-                    rank === 2 ? 'border-2 border-gray-400/70 bg-gradient-to-br from-gray-50/80 to-slate-50/80' :
-                    rank === 3 ? 'border-2 border-amber-300/70 bg-gradient-to-br from-amber-50/60 to-orange-50/60' :
-                    'border-2 border-gray-300/60'
-                  } ${user ? 'cursor-pointer' : ''}`}
-                  onClick={() => user && handleTeamClick(team)}
-                  whileHover={user ? { scale: 1.01 } : undefined}
-                  whileTap={user ? { scale: 0.99 } : undefined}
-                >
-                  {/* Rank Badge - Outside overflow container */}
-                  <motion.div 
-                    className={`absolute -top-2 -right-2 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg z-10 ${
-                      rank === 1 ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-white' :
-                      rank === 2 ? 'bg-gradient-to-r from-gray-400 to-gray-600 text-white' :
-                      rank === 3 ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white' :
-                      'bg-gray-800 text-white'
-                    }`}
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ duration: 0.4, delay: 1.8 + index * 0.1 }}
-                  >
-                    <span className="font-bold text-sm">#{rank}</span>
-                  </motion.div>
-
-                  {/* Inner container with animated borders */}
-                  <div className={`${rank <= 3 ? 'overflow-hidden' : ''} relative w-full h-full`}>
-                    {/* Animated Border Lines for Top 3 Ranks */}
-                    {rank <= 3 && (
-                      <>
-                        <span className={`absolute top-0 right-0 w-full h-1 ${
-                          rank === 1 ? 'bg-gradient-to-r from-transparent to-amber-400' :
-                          rank === 2 ? 'bg-gradient-to-r from-transparent to-gray-400' :
-                          'bg-gradient-to-r from-transparent to-orange-400'
-                        } animate-[slideRight_2s_linear_infinite]`}></span>
-                        
-                        <span className={`absolute top-0 right-0 h-full w-1 ${
-                          rank === 1 ? 'bg-gradient-to-b from-transparent to-amber-400' :
-                          rank === 2 ? 'bg-gradient-to-b from-transparent to-gray-400' :
-                          'bg-gradient-to-b from-transparent to-orange-400'
-                        } animate-[slideDown_2s_linear_infinite_1s]`}></span>
-                        
-                        <span className={`absolute bottom-0 right-0 w-full h-1 ${
-                          rank === 1 ? 'bg-gradient-to-l from-transparent to-amber-400' :
-                          rank === 2 ? 'bg-gradient-to-l from-transparent to-gray-400' :
-                          'bg-gradient-to-l from-transparent to-orange-400'
-                        } animate-[slideLeft_2s_linear_infinite]`}></span>
-                        
-                        <span className={`absolute top-0 left-0 h-full w-1 ${
-                          rank === 1 ? 'bg-gradient-to-t from-transparent to-amber-400' :
-                          rank === 2 ? 'bg-gradient-to-t from-transparent to-gray-400' :
-                          'bg-gradient-to-t from-transparent to-orange-400'
-                        } animate-[slideUp_2s_linear_infinite_1s]`}></span>
-                      </>
-                    )}
+          <div className="space-y-12">
+            {/* Top 3 Podium */}
+            {filteredTeams.length > 0 && (
+              <div className="flex flex-col md:flex-row items-end justify-center gap-4 md:gap-6 pt-8 pb-4">
+                {[1, 0, 2].map((podiumIndex) => {
+                  const team = filteredTeams[podiumIndex];
+                  if (!team) return null;
                   
-                    <div className="p-3">
-                      {/* Team Logo and Info Section */}
-                    <div className="flex items-center gap-3 mb-2">
+                  const rank = teams.findIndex(t => t.id === team.id) + 1;
+                  const isFirst = podiumIndex === 0;
+                  
+                  return (
+                    <motion.div
+                      key={`podium-${team.id}`}
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: podiumIndex * 0.1 }}
+                      className={`glass-card bg-white relative w-full md:w-1/3 flex flex-col items-center p-6 sm:p-8 transition-all duration-300 hover:shadow-lg ${
+                        user ? 'cursor-pointer hover:border-orange-200 hover:-translate-y-1' : ''
+                      } ${isFirst ? 'md:-translate-y-16 md:scale-110 border-amber-200 shadow-md z-10' : 'border-gray-100 z-0'}`}
+                      onClick={() => user && handleTeamClick(team)}
+                    >
+                      {/* Star Badge */}
+                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-10 transition-transform duration-300 hover:scale-110">
+                        <div className="relative flex items-center justify-center">
+                          <Star className={`w-12 h-12 fill-current ${
+                            rank === 1 ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]' :
+                            rank === 2 ? 'text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]' :
+                            'text-orange-400 drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]'
+                          }`} />
+                          <span className="absolute text-white font-bold text-sm tracking-wider">{rank}</span>
+                        </div>
+                      </div>
+
                       {/* Team Logo */}
-                      <motion.div 
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ duration: 0.4, delay: 1.9 + index * 0.1 }}
-                        className="flex-shrink-0"
-                      >
+                      <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white mb-4 mt-2 object-cover relative group">
                         {team.logoUrl ? (
-                          <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-white shadow-md bg-white">
-                            <img
-                              src={team.logoUrl}
-                              alt={`${team.teamName} logo`}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                (e.target as HTMLElement).style.display = 'none';
-                              }}
-                            />
-                          </div>
+                          <img
+                            src={team.logoUrl}
+                            alt={`${team.teamName} logo`}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
                         ) : (
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center border-2 border-white shadow-md">
-                            <Users className="w-7 h-7 text-blue-600" />
+                          <div className="w-full h-full bg-orange-50 flex items-center justify-center">
+                            <Users className="w-8 h-8 text-brand-orange" />
                           </div>
                         )}
-                      </motion.div>
+                        <div className="absolute inset-0 shadow-inner rounded-full pointer-events-none"></div>
+                      </div>
 
                       {/* Team Info */}
-                      <div className="flex-1 min-w-0">
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.5, delay: 2 + index * 0.1 }}
-                          className="flex items-center gap-2 mb-1"
-                        >
+                      <div className="text-center w-full mb-4">
+                        <h3 className={`font-bold text-gray-900 truncate mb-1 ${isFirst ? 'text-xl' : 'text-lg'}`}>
+                          {team.teamName}
+                        </h3>
+                        <p className="text-gray-500 text-sm truncate flex items-center justify-center gap-1">
+                          <Code className="w-3 h-3" />
+                          {team.projectName}
+                        </p>
+                      </div>
+
+                      {/* Points / Rating */}
+                      <div className="mt-auto pt-2 border-t w-full border-gray-100/50">
+                        <div className="flex items-center justify-center gap-2">
+                           {/* Add a star icon next to the number */}
+                           <Star className={`w-5 h-5 fill-current ${
+                            rank === 1 ? 'text-amber-400' :
+                            rank === 2 ? 'text-orange-500' :
+                            'text-orange-400'
+                           }`} />
+                           <span className={`font-bold bg-clip-text text-transparent ${
+                             rank === 1 ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-3xl' :
+                             rank === 2 ? 'bg-gradient-to-br from-orange-500 to-orange-700 text-2xl' :
+                             'bg-gradient-to-br from-orange-400 to-orange-600 text-2xl'
+                           }`}>
+                             {team.averageRating > 0 ? (team.averageRating * 10).toFixed(0) : '0'}
+                           </span>
+                           <span className={`text-sm font-medium ${
+                             rank === 1 ? 'text-amber-500/70' :
+                             rank === 2 ? 'text-orange-600/70' :
+                             'text-orange-500/70'
+                           }`}>pts</span>
+                        </div>
+                        <div className="text-xs text-gray-400 text-center mt-1">Based on {team.averageRating > 0 ? team.averageRating.toFixed(1) : 'N/A'} average</div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Remaining Teams List (Rank 4+) */}
+            {filteredTeams.length > 3 && (
+              <div className="space-y-4 pt-4">
+                <h4 className="text-lg font-bold text-gray-800 mb-6 px-2 flex items-center">
+                  <Medal className="w-5 h-5 mr-2 text-gray-400" /> 
+                  Runner Ups
+                </h4>
+                {filteredTeams.slice(3).map((team, index) => {
+                  const rank = teams.findIndex(t => t.id === team.id) + 1;
+                  
+                  return (
+                    <motion.div
+                      key={team.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: index * 0.05 }}
+                      className={`glass-card bg-white transition-all duration-300 hover:shadow-md hover:-translate-y-1 relative ${
+                        user ? 'cursor-pointer hover:border-orange-200' : ''
+                      }`}
+                      onClick={() => user && handleTeamClick(team)}
+                    >
+                      <div className="flex items-center p-4 gap-4">
+                        {/* Rank */}
+                        <div className="w-10 text-center font-bold text-gray-400 text-lg">
+                          #{rank}
+                        </div>
+
+                        {/* Team Logo */}
+                        <div className="flex-shrink-0">
+                          {team.logoUrl ? (
+                            <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 shadow-sm bg-white">
+                              <img
+                                src={team.logoUrl}
+                                alt={`${team.teamName} logo`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = 'none';
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center border border-orange-100 shadow-sm">
+                              <Users className="w-6 h-6 text-brand-orange" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Team Info */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
                           <h3 className="text-lg font-bold text-gray-900 truncate">
                             {team.teamName}
                           </h3>
-                          {RankIcon && (
-                            <motion.div
-                              whileHover={{ scale: 1.2, rotate: 360 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <RankIcon className={`w-4 h-4 ${
-                                rank === 1 ? 'text-amber-500' :
-                                rank === 2 ? 'text-gray-500' :
-                                rank === 3 ? 'text-amber-600' :
-                                'text-blue-500'
-                              }`} />
-                            </motion.div>
-                          )}
-                        </motion.div>
+                          <p className="text-gray-500 truncate flex items-center text-sm">
+                            <Code className="w-3 h-3 mr-1 text-gray-400" />
+                            {team.projectName}
+                          </p>
+                        </div>
                         
-                        <motion.p 
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.5, delay: 2.1 + index * 0.1 }}
-                          className="text-gray-600 truncate flex items-center text-sm"
-                        >
-                          <Code className="w-3 h-3 mr-1 text-gray-400" />
-                          {team.projectName}
-                        </motion.p>
+                        {/* Rating Info */}
+                        <div className="flex items-center gap-4">
+                          <div className="text-center hidden sm:block">
+                            <div className="text-sm font-bold text-gray-700">{team.totalRatings}</div>
+                            <div className="text-[10px] text-gray-400 uppercase tracking-wider">Ratings</div>
+                          </div>
+                          <div className="text-right">
+                             <div className={`text-xl font-bold ${
+                              team.averageRating >= 8 ? 'text-green-600' :
+                              team.averageRating >= 6 ? 'text-blue-600' :
+                              team.averageRating >= 4 ? 'text-yellow-600' :
+                              team.averageRating > 0 ? 'text-red-500' :
+                              'text-gray-400'
+                            }`}>
+                              {team.averageRating > 0 ? team.averageRating.toFixed(1) : 'N/A'}
+                            </div>
+                            <div className="text-[10px] text-gray-400 uppercase tracking-wider">Average</div>
+                          </div>
+                          
+                          {/* Rate Button */}
+                          <div className="w-16 flex justify-end">
+                            {user && team.ratedBy.includes(user.uid) ? (
+                              <div className="w-10 h-10 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-brand-orange font-bold text-sm shadow-sm">
+                                {getUserRating(team)}
+                              </div>
+                            ) : user ? (
+                              <div 
+                                className="w-10 h-10 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-400 hover:bg-orange-50 hover:text-brand-orange hover:border-orange-200 transition-colors shadow-sm cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTeamClick(team);
+                                }}
+                              >
+                                <Star className="w-4 h-4" />
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Rating Info - Now covers full width */}
-                    <div className="w-full">
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 2.2 + index * 0.1 }}
-                        className="flex flex-wrap sm:grid sm:grid-cols-3 gap-2 sm:gap-3"
-                      >
-                        {/* Average Rating */}
-                        <div className="flex-1 min-w-[70px] text-center p-2 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200/30">
-                          <div className={`text-lg font-bold ${
-                            team.averageRating >= 8 ? 'text-green-600' :
-                            team.averageRating >= 6 ? 'text-blue-600' :
-                            team.averageRating >= 4 ? 'text-yellow-600' :
-                            team.averageRating > 0 ? 'text-red-500' :
-                            'text-gray-400'
-                          }`}>
-                            {team.averageRating > 0 ? team.averageRating.toFixed(1) : 'N/A'}
-                          </div>
-                          <div className="text-xs text-gray-500 font-medium">Average</div>
-                        </div>
-                        
-                        {/* Total Ratings */}
-                        <div className="flex-1 min-w-[50px] text-center p-2 bg-white/50 backdrop-blur-sm rounded-lg border border-gray-200/30">
-                          <div className="text-lg font-bold text-gray-700">
-                            {team.totalRatings}
-                          </div>
-                          <div className="text-xs text-gray-500 font-medium">Ratings</div>
-                        </div>
-
-                        {/* User Rating / Rate Now Button */}
-                        {user && team.ratedBy.includes(user.uid) ? (
-                          <div className="flex-1 min-w-[70px] text-center p-2 bg-blue-50/70 backdrop-blur-sm rounded-lg border border-blue-200/50">
-                            <div className="text-lg font-bold text-blue-700">{getUserRating(team)}</div>
-                            <div className="text-xs text-blue-600 font-medium">Your Rating</div>
-                          </div>
-                        ) : user ? (
-                          <motion.div 
-                            className="flex-1 min-w-[70px] text-center p-2 bg-orange-50 backdrop-blur-sm rounded-lg border border-orange-200/50 cursor-pointer"
-                            whileHover={{ scale: 1.05, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => handleTeamClick(team)}
-                          >
-                            <div className="text-sm font-bold text-brand-orange">Rate Now</div>
-                            <div className="text-xs text-orange-500">Click here</div>
-                          </motion.div>
-                        ) : (
-                          <div className="flex-1 min-w-[70px] text-center p-2 bg-gray-50/70 backdrop-blur-sm rounded-lg border border-gray-200/30">
-                            <div className="text-sm text-gray-400 font-medium">Sign In</div>
-                            <div className="text-xs text-gray-400">to Rate</div>
-                          </div>
-                        )}
-                      </motion.div>
-                    </div> {/* Close w-full container */}
-                    </div> {/* Close p-3 container */}
-                  </div> {/* Close inner container */}
-                </motion.div>
-              );
-            })}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           </div>
         )}
       </div>
